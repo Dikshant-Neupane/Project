@@ -277,11 +277,11 @@ function AboutContent() {
         <div>
           <div className="text-sm font-bold text-[#f5f0e8]">Dikshant Neupane</div>
           <div className="text-[10px] text-[#a3e635] tracking-widest uppercase mt-0.5">AI / Data / ML Engineer</div>
-          <div className="text-[10px] text-[#7a6f5a] mt-1">Kathmandu, Nepal 🇳🇵</div>
+          <div className="text-[10px] text-[#c4b99a] mt-1 font-medium">Kathmandu, Nepal 🇳🇵</div>
         </div>
       </div>
       <div className="space-y-1">
-        <div className="text-[9px] text-[#7a6f5a] uppercase font-bold tracking-wider">About</div>
+        <div className="text-[9px] text-[#d9f99d] uppercase font-bold tracking-wider">About</div>
         <p className="text-[#c4b99a] leading-relaxed text-[11px]">
           Building practical AI/ML systems with a focus on real-world applications in the Nepali context.
           Passionate about low-resource NLP, sports analytics, and agentic systems that actually work in production.
@@ -290,7 +290,7 @@ function AboutContent() {
       <div className="grid grid-cols-2 gap-2">
         {[['Focus','Applied ML & NLP'],['Stack','Python-first'],['Domain','Nepal & South Asia'],['Mode','Builder']].map(([k,v])=>(
           <div key={k} className="bg-black/20 rounded-lg p-2.5 border border-[rgba(255,220,160,0.07)]">
-            <div className="text-[9px] text-[#7a6f5a] uppercase tracking-wider">{k}</div>
+            <div className="text-[9px] text-[#d9f99d] uppercase tracking-wider font-medium">{k}</div>
             <div className="text-[11px] text-[#f5f0e8] mt-0.5 font-medium">{v}</div>
           </div>
         ))}
@@ -310,14 +310,14 @@ function ContactContent() {
   ];
   return (
     <div className="space-y-4 text-xs font-mono">
-      <div className="text-[9px] text-[#7a6f5a] uppercase font-bold tracking-wider pb-2 border-b border-[rgba(255,220,160,0.12)]">Contact &amp; Uplinks</div>
+      <div className="text-[9px] text-[#d9f99d] uppercase font-bold tracking-wider pb-2 border-b border-[rgba(255,220,160,0.12)]">Contact &amp; Uplinks</div>
       {links.map(({ icon, label, value, href }) => (
         <a key={label} href={href} target="_blank" rel="noopener noreferrer"
           className="no-drag flex items-center gap-3 p-3 rounded-xl border border-[rgba(255,220,160,0.07)] bg-black/20
             hover:bg-[rgba(163,230,53,0.08)] hover:border-[rgba(163,230,53,0.3)] transition-all group cursor-pointer block">
           <span className="w-8 h-8 rounded-lg bg-[#a3e635]/10 flex items-center justify-center text-[#a3e635] shrink-0">{icon}</span>
           <div className="flex-1 min-w-0">
-            <div className="text-[9px] text-[#7a6f5a] uppercase tracking-wider">{label}</div>
+            <div className="text-[9px] text-[#d9f99d] uppercase tracking-wider">{label}</div>
             <div className="text-[11px] text-[#e8e0d0] group-hover:text-[#a3e635] transition-colors truncate mt-0.5">{value}</div>
           </div>
           <span className="text-[#5a5045] group-hover:text-[#a3e635] transition-colors">{icons.externalLink}</span>
@@ -325,7 +325,7 @@ function ContactContent() {
       ))}
       <div className="pt-2 border-t border-[rgba(255,220,160,0.07)] flex items-center gap-2">
         <div className="w-1.5 h-1.5 rounded-full bg-[#a3e635] animate-pulse"/>
-        <span className="text-[9px] text-[#7a6f5a]">Available for collaborations &amp; freelance projects</span>
+        <span className="text-[9px] text-[#c4b99a] font-medium">Available for collaborations &amp; freelance projects</span>
       </div>
     </div>
   );
@@ -530,11 +530,11 @@ function MobileProjectSheet({ project, onClose }: { project: Project | null; onC
                 <p className="text-[#9a8f7a] leading-relaxed text-[11px]">{project.overview}</p>
               </div>
               <div className="bg-black/30 p-3 rounded-lg border border-[rgba(255,220,160,0.07)] space-y-1">
-                <span className="text-[10px] text-[#7a6f5a] uppercase font-bold tracking-wider block">Methods &amp; Modeling:</span>
+                <span className="text-[10px] text-[#d9f99d] uppercase font-bold tracking-wider block">Methods &amp; Modeling:</span>
                 <p className="text-[#c4b99a] text-[11px] leading-relaxed">{project.methods}</p>
               </div>
               <div className="bg-black/30 p-3 rounded-lg border border-[rgba(255,220,160,0.07)] space-y-1">
-                <span className="text-[10px] text-[#7a6f5a] uppercase font-bold tracking-wider block">Technology Stack:</span>
+                <span className="text-[10px] text-[#d9f99d] uppercase font-bold tracking-wider block">Technology Stack:</span>
                 <p className="text-[#a3e635] text-[11px]">{project.stack}</p>
               </div>
               <div className="pt-2 border-t border-[rgba(255,220,160,0.12)] flex flex-wrap gap-2 items-center justify-between">
@@ -542,7 +542,7 @@ function MobileProjectSheet({ project, onClose }: { project: Project | null; onC
                   className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#a3e635]/10 border border-[#a3e635]/20 text-[#a3e635] text-[10px] font-bold hover:bg-[#a3e635]/20 transition-all">
                   {icons.github} View on GitHub {icons.externalLink}
                 </a>
-                <span className="text-[#7a6f5a] font-mono text-[10px]">Demo: <span className="text-[#c4b99a]">{project.demo}</span></span>
+                <span className="text-[#c4b99a] font-mono text-[10px] font-medium">Demo: <span className="text-[#d9f99d]">{project.demo}</span></span>
               </div>
             </>
           )}
@@ -1175,7 +1175,7 @@ export default function App() {
             </div>
           </div>
           <div className={`${cardBase} p-6 relative card-warm`}>
-            <h3 className="text-[9px] text-[#7a6f5a] font-bold uppercase mb-2.5 tracking-widest font-mono">CURRENT FOCUS</h3>
+            <h3 className="text-[9px] text-[#d9f99d] font-bold uppercase mb-2.5 tracking-widest font-mono">CURRENT FOCUS</h3>
             <p className="text-xs text-[#e8e0d0] leading-relaxed font-mono">Building practical AI/ML systems across data, NLP, statistical analysis and autonomous agents.</p>
           </div>
         </aside>
@@ -1193,11 +1193,11 @@ export default function App() {
               <div className="w-px h-8 bg-white/10"/>
               <div className="space-y-0.5">
                 <div className="flex items-center gap-2.5 text-[10px]">
-                  <span className="text-[#7a6f5a] font-mono">AD</span>
+                  <span className="text-[#c4b99a] font-mono">AD</span>
                   <span className="text-[#e8e0d0] font-medium">Jun 07, 2026</span>
                 </div>
                 <div className="flex items-center gap-2.5 text-[10px]">
-                  <span className="text-[#7a6f5a] font-mono">BS</span>
+                  <span className="text-[#c4b99a] font-mono">BS</span>
                   <span className="text-[#e8e0d0] font-medium">Jestha 19, 2081</span>
                 </div>
               </div>
@@ -1212,18 +1212,18 @@ export default function App() {
                   <div className="w-2 h-2 rounded-full bg-[#a3e635] shadow-[0_0_8px_rgba(163,230,53,0.6)]"/>
                   <span className="text-[10px] font-mono text-[#a3e635] font-bold uppercase tracking-wider">SYSTEM: ONLINE</span>
                 </div>
-                <span className="text-[9px] text-[#7a6f5a] font-mono">22.4°C</span>
+                <span className="text-[9px] text-[#c4b99a] font-mono">22.4°C</span>
               </div>
               <div className="space-y-1 border-t border-[rgba(255,220,160,0.07)] pt-2.5 font-mono">
-                <span className="text-[9px] text-[#7a6f5a] uppercase font-bold tracking-wider block">PROJECT INDEX:</span>
+                <span className="text-[9px] text-[#d9f99d] uppercase font-bold tracking-wider block">PROJECT INDEX:</span>
                 <span className="text-[11px] text-[#f5f0e8] font-semibold">05 PROJECTS</span>
               </div>
               <div className="space-y-1 font-mono">
-                <span className="text-[9px] text-[#7a6f5a] uppercase font-bold tracking-wider block">PRIMARY STACK:</span>
+                <span className="text-[9px] text-[#d9f99d] uppercase font-bold tracking-wider block">PRIMARY STACK:</span>
                 <p className="text-[10px] text-[#c4b99a] leading-snug">Python, Pandas, NumPy, scikit-learn, SQL, PyTorch, LLM APIs</p>
               </div>
               <div className="space-y-1 font-mono">
-                <span className="text-[9px] text-[#7a6f5a] uppercase font-bold tracking-wider block">PROJECT TYPES:</span>
+                <span className="text-[9px] text-[#d9f99d] uppercase font-bold tracking-wider block">PROJECT TYPES:</span>
                 <p className="text-[10px] text-[#a3e635]/90 leading-snug">DATA / ML, NLP, STATISTICS, AGENTIC AI</p>
               </div>
               <div className="flex justify-between items-center pt-2 border-t border-[rgba(255,220,160,0.07)]">
@@ -1257,7 +1257,7 @@ export default function App() {
               {/* Static boot output */}
               <div className="text-xs text-[#c4b99a]">
                 <span className="text-[#a3e635] font-bold">$</span> projects<br/>
-                <span className="text-[#7a6f5a] italic">Loading project index...</span>
+                <span className="text-[#c4b99a] italic">Loading project index...</span>
               </div>
 
               {/* Project rows */}
@@ -1271,7 +1271,7 @@ export default function App() {
                     </div>
                     <div className="text-xs text-[#f5f0e8] font-semibold flex items-center justify-between mt-0.5">
                       <span>{proj.name}</span>
-                      <span className="text-[10px] text-[#7a6f5a] font-mono group-hover:text-[#a3e635] transition-colors ml-2 shrink-0">VIEW &gt;</span>
+                      <span className="text-[10px] text-[#c4b99a] font-mono group-hover:text-[#a3e635] transition-colors ml-2 shrink-0">VIEW &gt;</span>
                     </div>
                   </div>
                 ))}
