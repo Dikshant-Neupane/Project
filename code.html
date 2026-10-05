@@ -1,0 +1,631 @@
+<!DOCTYPE html><html class="dark" lang="en"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>Dikshant OS | Projects</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com" rel="preconnect">
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&amp;family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        terminal: {
+                            green: '#a3e635',
+                            dark: '#0a0a0a',
+                            muted: '#404040',
+                            sidebar: '#0d0d0d'
+                        }
+                    },
+                    fontFamily: {
+                        mono: ['"JetBrains Mono"', 'monospace'],
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        :root {
+            --glass-bg: rgba(22, 22, 19, 0.58);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --glass-accent: rgba(163, 230, 53, 0.15);
+        }
+
+        body {
+            background-color: #0c0d0a;
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            width: 100vw;
+            overflow: hidden;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .bg-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background-image: url('https://lh3.googleusercontent.com/aida/AEtjO1UaPv7OWFmQUQKm_yJEOaBTtJ_6UZl5nLKuSe_HC34Vj_FSXmILnbYN3bQuzY_3XwNSE-9TLILsDaB59U1Lnj4xJpse_mitNWcU0HJePZ7XnlcJmPaV93fnysXyLkVVKC4AayXtsu2u_Q3reOx_6FLP0y29PPByh9G7G0SWBYOfRJ5e00L7jzQE0KGFBaDQtU421--RqmEVSkR1jHaS_YI7CCaOrwnJLcWhbrplYN0ddsbC1wa6hB7IG4HkD9E3CxKgElr2CaPR');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            filter: brightness(0.85);
+        }
+
+        .glass-panel {
+            background: var(--glass-bg);
+            backdrop-filter: blur(36px) saturate(160%);
+            -webkit-backdrop-filter: blur(36px) saturate(160%);
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 24px 48px -12px rgba(0, 0, 0, 0.55);
+        }
+
+        .window {
+            position: absolute;
+            border-radius: 16px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.25s ease;
+        }
+
+        .window-header {
+            height: 38px;
+            background: rgba(0, 0, 0, 0.28);
+            display: flex;
+            align-items: center;
+            padding: 0 14px;
+            cursor: grab;
+            user-select: none;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+        }
+
+        .window-header:active { cursor: grabbing; }
+
+        .traffic-light {
+            width: 11px;
+            height: 11px;
+            border-radius: 50%;
+            margin-right: 7px;
+            cursor: pointer;
+            transition: filter 0.2s, transform 0.15s;
+        }
+        .traffic-light:hover { filter: brightness(1.25); transform: scale(1.08); }
+
+        .minimized {
+            transform: scale(0.2) translateY(600px) !important;
+            opacity: 0 !important;
+            pointer-events: none;
+        }
+
+        .maximized {
+            top: 12px !important;
+            left: 12px !important;
+            width: calc(100vw - 24px) !important;
+            height: calc(100vh - 110px) !important;
+            transform: none !important;
+        }
+
+        .dock-container {
+            background: rgba(18, 18, 16, 0.65);
+            backdrop-filter: blur(40px);
+            -webkit-backdrop-filter: blur(40px);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            padding: 8px 12px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+        }
+
+        .dock-item {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+        }
+
+        .dock-item:hover {
+            transform: scale(1.22) translateY(-6px);
+            margin: 0 4px;
+        }
+
+        .dock-item::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 4px;
+            height: 4px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.7);
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+        .dock-item.active::after { opacity: 1; }
+
+        .pill-btn {
+            background: rgba(163, 230, 53, 0.06);
+            border: 1px solid rgba(163, 230, 53, 0.25);
+            padding: 5px 14px;
+            border-radius: 999px;
+            font-size: 11px;
+            font-weight: 500;
+            font-family: 'JetBrains Mono', monospace;
+            transition: all 0.2s ease;
+            color: #a3e635;
+            cursor: pointer;
+        }
+        .pill-btn:hover {
+            background: rgba(163, 230, 53, 0.2);
+            border-color: #a3e635;
+            transform: translateY(-1px);
+        }
+        .pill-btn.active {
+            background: rgba(163, 230, 53, 0.25);
+            border-color: #a3e635;
+            box-shadow: 0 0 12px rgba(163, 230, 53, 0.3);
+            color: #d9f99d;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar { width: 5px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.12); border-radius: 10px; }
+
+        #clock-widget {
+            transition: all 0.3s ease;
+        }
+        #clock-widget:hover {
+            border-color: rgba(163, 230, 53, 0.4);
+            background: rgba(22, 22, 19, 0.75);
+        }
+
+        .cursor-blink {
+            animation: blink 1s step-end infinite;
+        }
+        @keyframes blink { 50% { opacity: 0; } }
+
+        .project-row {
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+        .project-row:hover {
+            background: rgba(163, 230, 53, 0.08);
+            border-color: rgba(163, 230, 53, 0.35);
+            padding-left: 14px;
+        }
+    </style>
+</head>
+<body class="h-screen w-screen overflow-hidden select-none">
+<div class="bg-container"></div>
+<main class="relative h-full w-full z-10 flex flex-col md:flex-row">
+<!-- Left Sidebar: Profile & Mission -->
+<aside class="w-full md:w-80 h-auto md:h-full p-6 flex flex-col gap-5 shrink-0">
+<!-- Profile Card -->
+<div class="glass-panel p-6 rounded-2xl">
+<img alt="Dikshant Neupane" class="w-20 h-20 rounded-2xl object-cover mb-4 border border-white/10 shadow-md" src="https://lh3.googleusercontent.com/aida/AEtjO1WIPgEJ49fDizqsks9Zonham8nlp9PkvNjM1LBNsxvttNMqIBuP81Kyx1GJAKutvzloXkUIWTLOMbxrZFWOy-HhDT15N9IRUAG-Y69kTkqRDB5n1scdhVid0z53MReuwru2g7UMYTJfKVlk7TeFIwF3P7ZhuYHdxbLX5oZsKYFduqQkYY8WZvX7o98CO4MxEotId9cuJ6pSoILiS1LOOcRBHnbz4FlOqkFP9zJXI8DoYEx85gZd86Sa3GxgvLummiwT5lJm7t5J">
+<h1 class="text-xl font-bold text-white tracking-tight">Dikshant Neupane</h1>
+<p class="text-[10px] text-terminal-green tracking-[0.2em] uppercase font-bold mt-1">AI / DATA / ML</p>
+<div class="mt-7 space-y-3.5 text-xs font-mono">
+<div class="flex justify-between items-center border-b border-white/5 pb-2">
+<span class="text-zinc-400 text-[11px] font-sans">PROJECTS:</span>
+<span class="text-white font-semibold">05</span>
+</div>
+<div class="flex justify-between items-center border-b border-white/5 pb-2">
+<span class="text-zinc-400 text-[11px] font-sans">ML SYSTEMS:</span>
+<span class="text-white font-semibold">03</span>
+</div>
+<div class="flex justify-between items-center border-b border-white/5 pb-2">
+<span class="text-zinc-400 text-[11px] font-sans">AI SYSTEMS:</span>
+<span class="text-white font-semibold">02</span>
+</div>
+<div class="flex justify-between items-center">
+<span class="text-zinc-400 text-[11px] font-sans">EXPERIMENTS:</span>
+<span class="text-white font-semibold">—</span>
+</div>
+</div>
+</div>
+<!-- Current Mission / Focus Card -->
+<div class="glass-panel p-6 rounded-2xl">
+<h3 class="text-[9px] text-zinc-500 font-bold uppercase mb-2.5 tracking-widest font-mono">CURRENT FOCUS</h3>
+<p class="text-xs text-zinc-200 leading-relaxed font-mono">Building practical AI/ML systems across data, NLP, statistical analysis and autonomous agents.</p>
+</div>
+</aside>
+<!-- Main Desktop Area -->
+<div class="flex-1 relative p-6" id="desktop">
+<!-- System Status & Dual Clock (Top Right) -->
+<div class="absolute top-0 right-0 p-6 flex flex-col items-end gap-3.5 z-20">
+<div class="glass-panel px-5 py-2.5 rounded-2xl flex items-center gap-5 border border-white/10" id="clock-widget">
+<div class="flex flex-col items-end">
+<span class="text-xl text-white font-mono font-bold tracking-tight" id="clock-time">18:51:41</span>
+<span class="text-[9px] text-terminal-green font-bold tracking-widest uppercase font-mono" id="clock-day">SUNDAY</span>
+</div>
+<div class="w-px h-8 bg-white/10"></div>
+<div class="space-y-0.5">
+<div class="flex items-center gap-2.5 text-[10px]">
+<span class="text-zinc-500 font-mono">AD</span>
+<span class="text-zinc-200 font-medium" id="date-ad">Jun 07, 2026</span>
+</div>
+<div class="flex items-center gap-2.5 text-[10px]">
+<span class="text-zinc-500 font-mono">BS</span>
+<span class="text-zinc-200 font-medium" id="date-bs">Jestha 19, 2081</span>
+</div>
+</div>
+<div class="ml-1 flex items-center gap-1.5 px-2 py-1 bg-terminal-green/10 rounded-md">
+<div class="w-1.5 h-1.5 rounded-full bg-terminal-green animate-pulse"></div>
+<span class="text-[8px] text-terminal-green font-black tracking-wider">LIVE</span>
+</div>
+</div>
+<!-- Right Telemetry Panel -->
+<div class="glass-panel w-72 p-4 space-y-3.5 rounded-2xl border border-white/5 text-xs">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<div class="w-2 h-2 rounded-full bg-terminal-green shadow-[0_0_8px_rgba(163,230,53,0.6)]"></div>
+<span class="text-[10px] font-mono text-terminal-green font-bold uppercase tracking-wider">SYSTEM: ONLINE</span>
+</div>
+<span class="text-[9px] text-zinc-500 font-mono">22.4°C</span>
+</div>
+<div class="space-y-1 border-t border-white/5 pt-2.5 font-mono">
+<span class="text-[9px] text-zinc-500 uppercase font-bold tracking-wider block">PROJECT INDEX:</span>
+<span class="text-[11px] text-white font-semibold">05 PROJECTS</span>
+</div>
+<div class="space-y-1 font-mono">
+<span class="text-[9px] text-zinc-500 uppercase font-bold tracking-wider block">PRIMARY STACK:</span>
+<p class="text-[10px] text-zinc-300 leading-snug">Python, Pandas, NumPy, scikit-learn, SQL, PyTorch, LLM APIs</p>
+</div>
+<div class="space-y-1 font-mono">
+<span class="text-[9px] text-zinc-500 uppercase font-bold tracking-wider block">PROJECT TYPES:</span>
+<p class="text-[10px] text-terminal-green/90 leading-snug">DATA / ML, NLP, STATISTICS, AGENTIC AI</p>
+</div>
+<div class="flex justify-between items-center pt-2 border-t border-white/5">
+<span class="text-[9px] text-zinc-400 font-mono">LOC: NEPAL</span>
+<span class="text-[9px] text-terminal-green/60 font-mono">v2.0.4</span>
+</div>
+</div>
+</div>
+<!-- Terminal Window (Projects Page View) -->
+<div class="window glass-panel w-full max-w-2xl h-[510px] z-20 shadow-2xl" id="win-terminal" style="top: 14%; left: 48%; transform: translateX(-48%); z-index: 102;">
+<header class="window-header">
+<div class="flex gap-1.5">
+<div class="traffic-light bg-[#ff5f57]" onclick="closeWindow('win-terminal')"></div>
+<div class="traffic-light bg-[#ffbd2e]" onclick="minimizeWindow('win-terminal')"></div>
+<div class="traffic-light bg-[#28c840]" onclick="toggleMaximize('win-terminal')"></div>
+</div>
+<div class="flex-1 text-center pr-12">
+<span class="text-[11px] font-mono text-zinc-400 font-medium">guest@dikshant-os: ~/projects</span>
+</div>
+</header>
+<div class="flex-1 p-6 font-mono text-sm overflow-y-auto custom-scrollbar bg-black/25">
+<div class="space-y-3.5" id="terminal-wrapper">
+<div class="text-terminal-green leading-relaxed text-xs">Welcome to Dikshant OS v2.0.4. Type 'help' to see available commands.</div>
+<!-- Nav Buttons -->
+<div class="flex flex-wrap gap-2 pt-1 pb-2">
+<button class="pill-btn" onclick="executeCommand('bio')">[About Me]</button>
+<button class="pill-btn active" onclick="executeCommand('projects')">[Projects]</button>
+<button class="pill-btn" onclick="executeCommand('blogs')">[Logs]</button>
+<button class="pill-btn" onclick="executeCommand('contact')">[Contact]</button>
+</div>
+<!-- Active Command Output -->
+<div class="text-xs text-zinc-300">
+<span class="text-terminal-green font-bold">$</span> projects<br>
+<span class="text-zinc-500 italic mt-0.5 inline-block">Loading project index...</span>
+</div>
+<!-- Interactive Project Items List -->
+<div class="space-y-2 pt-1">
+<div class="project-row border border-white/5 rounded-lg p-2.5 bg-black/20" onclick="showProjectDetail('cricnepal')">
+<div class="text-[10px] text-terminal-green font-bold tracking-wider">01 // DATA / ML</div>
+<div class="text-xs text-white font-semibold flex items-center justify-between mt-0.5">
+<span class="">CricNepal — Janakpur Bolts Analytics Dashboard</span>
+<span class="text-[10px] text-zinc-500 font-mono group-hover:text-terminal-green">VIEW &gt;</span>
+</div>
+</div>
+<div class="project-row border border-white/5 rounded-lg p-2.5 bg-black/20" onclick="showProjectDetail('house-price')">
+<div class="text-[10px] text-terminal-green font-bold tracking-wider">02 // SUPERVISED ML</div>
+<div class="text-xs text-white font-semibold flex items-center justify-between mt-0.5">
+<span class="">House Price Prediction</span>
+<span class="text-[10px] text-zinc-500 font-mono">VIEW &gt;</span>
+</div>
+</div>
+<div class="project-row border border-white/5 rounded-lg p-2.5 bg-black/20" onclick="showProjectDetail('nepal-election')">
+<div class="text-[10px] text-terminal-green font-bold tracking-wider">03 // STATISTICS / ML</div>
+<div class="text-xs text-white font-semibold flex items-center justify-between mt-0.5">
+<span class="">Nepal Election 2082</span>
+<span class="text-[10px] text-zinc-500 font-mono">VIEW &gt;</span>
+</div>
+</div>
+<div class="project-row border border-white/5 rounded-lg p-2.5 bg-black/20" onclick="showProjectDetail('jana-sunuwaai')">
+<div class="text-[10px] text-terminal-green font-bold tracking-wider">04 // NLP / CIVIC TECH</div>
+<div class="text-xs text-white font-semibold flex items-center justify-between mt-0.5">
+<span class="">Jana Sunuwaai</span>
+<span class="text-[10px] text-zinc-500 font-mono">VIEW &gt;</span>
+</div>
+</div>
+<div class="project-row border border-white/5 rounded-lg p-2.5 bg-black/20" onclick="showProjectDetail('truva-agent')">
+<div class="text-[10px] text-terminal-green font-bold tracking-wider">05 // AGENTIC AI</div>
+<div class="text-xs text-white font-semibold flex items-center justify-between mt-0.5">
+<span class="">Truva Agent</span>
+<span class="text-[10px] text-zinc-500 font-mono">VIEW &gt;</span>
+</div>
+</div>
+</div>
+<div class="space-y-3" id="terminal-history"></div>
+<!-- CLI Prompt Input -->
+<div class="flex items-center gap-2 pt-2">
+<span class="text-terminal-green font-bold">$</span>
+<input autocomplete="off" class="bg-transparent border-none outline-none flex-1 text-terminal-green text-xs p-0 focus:ring-0 placeholder:text-zinc-600 font-mono" id="terminal-input" placeholder="type a command or project ID..." type="text">
+<span class="w-1.5 h-3.5 bg-terminal-green cursor-blink"></span>
+</div>
+</div>
+</div>
+</div>
+<!-- Project Details Modal / Window in Exact Dikshant OS Window Styling -->
+<div class="window glass-panel w-full max-w-xl h-[440px] z-30 shadow-2xl" id="win-project-detail" style="top: 22%; left: 52%; transform: translateX(-45%); z-index: 103;">
+<header class="window-header">
+<div class="flex gap-1.5">
+<div class="traffic-light bg-[#ff5f57]" onclick="closeWindow('win-project-detail')"></div>
+<div class="traffic-light bg-[#ffbd2e]" onclick="minimizeWindow('win-project-detail')"></div>
+<div class="traffic-light bg-[#28c840]" onclick="toggleMaximize('win-project-detail')"></div>
+</div>
+<div class="flex-1 text-center pr-12 font-mono text-[11px] text-zinc-400 font-medium" id="modal-header-title">dikshant-os: ~/projects/nepal-election</div>
+</header>
+<div class="flex-1 p-6 font-mono text-xs overflow-y-auto custom-scrollbar bg-black/30 space-y-4" id="modal-body-content">
+                <div class="flex items-center justify-between border-b border-white/10 pb-2">
+                    <span class="text-terminal-green font-bold tracking-wider text-[11px]">03 // STATISTICS / ML</span>
+                    <span class="text-[9px] px-2 py-0.5 rounded bg-white/10 text-zinc-300">STATUS: COMPLETE</span>
+                </div>
+                <div>
+                    <h3 class="text-sm font-bold text-white mb-1">Nepal Election 2082</h3>
+                    <p class="text-zinc-400 leading-relaxed text-[11px]">Statistical analysis and demographic swing voter estimation framework modeling constituency-level trends.</p>
+                </div>
+                <div class="space-y-1 bg-black/30 p-3 rounded-lg border border-white/5">
+                    <span class="text-[10px] text-zinc-500 uppercase font-bold tracking-wider block">Methods &amp; Modeling:</span>
+                    <p class="text-zinc-300 text-[11px] leading-relaxed">Bayesian inference, spatial vote share distribution, and swing seat sensitivity simulation.</p>
+                </div>
+                <div class="space-y-1 bg-black/30 p-3 rounded-lg border border-white/5">
+                    <span class="text-[10px] text-zinc-500 uppercase font-bold tracking-wider block">Technology Stack:</span>
+                    <p class="text-terminal-green text-[11px]">Python, Statsmodels, Scipy, GeoPandas, Matplotlib</p>
+                </div>
+                <div class="pt-2 border-t border-white/10 flex flex-wrap gap-3 items-center justify-between text-[11px]">
+                    <span class="text-zinc-400 truncate font-mono">Repo: <a href="https://github.com/dikshant/nepal-election-2082" target="_blank" class="text-terminal-green underline">https://github.com/dikshant/nepal-election-2082</a></span>
+                    <span class="text-zinc-400 font-mono">Demo: <span class="text-zinc-200">Constituency analytics notebook</span></span>
+                </div>
+            </div>
+</div>
+</div>
+<!-- Dock (Bottom) -->
+<footer class="fixed bottom-6 left-1/2 -translate-x-1/2 z-[100]">
+<div class="dock-container"><div class="dock-item bg-blue-600/90 shadow-lg cursor-pointer active" onclick="executeCommand('projects')" title="Projects"><span class="material-symbols-outlined text-white text-2xl">folder</span></div><div class="dock-item bg-zinc-900 border border-zinc-800 cursor-pointer active" onclick="openWindow('win-terminal')" title="Terminal"><span class="material-symbols-outlined text-terminal-green text-2xl">terminal</span></div></div>
+</footer>
+</main>
+<script>
+        // Project Database Structure
+        const projectData = {
+            'cricnepal': {
+                id: '01',
+                category: 'DATA / ML',
+                name: 'CricNepal — Janakpur Bolts Analytics Dashboard',
+                overview: 'Complete player performance, match analytics, and run-rate predictive modeling engine customized for franchise cricket.',
+                methods: 'Exploratory data analysis, match-phase clustering, and ball-by-ball win-probability modeling.',
+                stack: 'Python, Pandas, NumPy, Streamlit, Plotly, scikit-learn',
+                repo: 'https://github.com/dikshant/cricnepal-bolts-analytics',
+                demo: 'Available in local deployment mode'
+            },
+            'house-price': {
+                id: '02',
+                category: 'SUPERVISED ML',
+                name: 'House Price Prediction',
+                overview: 'Multivariate real estate valuation pipeline evaluating structural, geographic, and municipal amenities data.',
+                methods: 'Feature engineering, outlier clipping, cross-validation tuning across Ridge, Random Forest, and Gradient Boosting.',
+                stack: 'Python, scikit-learn, XGBoost, Pandas, Seaborn',
+                repo: 'https://github.com/dikshant/house-price-prediction',
+                demo: 'Live pipeline notebook & model inference'
+            },
+            'nepal-election': {
+                id: '03',
+                category: 'STATISTICS / ML',
+                name: 'Nepal Election 2082',
+                overview: 'Statistical analysis and demographic swing voter estimation framework modeling constituency-level trends.',
+                methods: 'Bayesian inference, spatial vote share distribution, and swing seat sensitivity simulation.',
+                stack: 'Python, Statsmodels, Scipy, GeoPandas, Matplotlib',
+                repo: 'https://github.com/dikshant/nepal-election-2082',
+                demo: 'Constituency analytics notebook'
+            },
+            'jana-sunuwaai': {
+                id: '04',
+                category: 'NLP / CIVIC TECH',
+                name: 'Jana Sunuwaai',
+                overview: 'Citizen grievance categorization and summarization system built for low-resource Nepali language text inputs.',
+                methods: 'Nepali fine-tuned transformer encoder, token classification for civic departments, priority ranking.',
+                stack: 'Python, PyTorch, Transformers, HuggingFace, FastAPI',
+                repo: 'https://github.com/dikshant/jana-sunuwaai-nlp',
+                demo: 'API staging instance'
+            },
+            'truva-agent': {
+                id: '05',
+                category: 'AGENTIC AI',
+                name: 'Truva Agent',
+                overview: 'Autonomous multi-step task resolution agent executing database queries, document indexing, and synthesized reporting.',
+                methods: 'Tool calling loops, structured scratchpad reasoning, vector memory retrieval.',
+                stack: 'Python, LangChain, OpenAI / Anthropic APIs, ChromaDB, Docker',
+                repo: 'https://github.com/dikshant/truva-agent-system',
+                demo: 'CLI & webhook orchestrator'
+            }
+        };
+
+        // Window Drag & Layering Management
+        let zIndex = 100;
+        let dragElement = null;
+        let offset = { x: 0, y: 0 };
+
+        window.addEventListener('DOMContentLoaded', () => {
+            setupDraggables();
+            updateClock();
+            setInterval(updateClock, 1000);
+            document.getElementById('terminal-input').focus();
+        });
+
+        function setupDraggables() {
+            const headers = document.querySelectorAll('.window-header');
+            headers.forEach(header => {
+                const win = header.parentElement;
+                header.addEventListener('mousedown', (e) => {
+                    if (e.target.classList.contains('traffic-light')) return;
+                    dragElement = win;
+                    win.style.zIndex = ++zIndex;
+                    offset.x = e.clientX - win.offsetLeft;
+                    offset.y = e.clientY - win.offsetTop;
+                });
+            });
+
+            document.addEventListener('mousemove', (e) => {
+                if (!dragElement || dragElement.classList.contains('maximized')) return;
+                dragElement.style.left = (e.clientX - offset.x) + 'px';
+                dragElement.style.top = (e.clientY - offset.y) + 'px';
+            });
+
+            document.addEventListener('mouseup', () => {
+                dragElement = null;
+            });
+
+            document.querySelectorAll('.window').forEach(win => {
+                win.addEventListener('mousedown', () => {
+                    win.style.zIndex = ++zIndex;
+                });
+            });
+        }
+
+        // Window Control Functions
+        function openWindow(id) {
+            const win = document.getElementById(id);
+            if (!win) return;
+            win.classList.remove('hidden', 'minimized');
+            win.style.zIndex = ++zIndex;
+        }
+
+        function closeWindow(id) {
+            const win = document.getElementById(id);
+            if (win) win.classList.add('hidden');
+        }
+
+        function minimizeWindow(id) {
+            const win = document.getElementById(id);
+            if (win) win.classList.add('minimized');
+        }
+
+        function toggleMaximize(id) {
+            const win = document.getElementById(id);
+            if (win) win.classList.toggle('maximized');
+        }
+
+        // Project Detail Modal Function
+        function showProjectDetail(key) {
+            const proj = projectData[key];
+            if (!proj) return;
+
+            const modal = document.getElementById('win-project-detail');
+            const title = document.getElementById('modal-header-title');
+            const body = document.getElementById('modal-body-content');
+
+            title.textContent = `dikshant-os: ~/projects/${key}`;
+            body.innerHTML = `
+                <div class="flex items-center justify-between border-b border-white/10 pb-2">
+                    <span class="text-terminal-green font-bold tracking-wider text-[11px]">${proj.id} // ${proj.category}</span>
+                    <span class="text-[9px] px-2 py-0.5 rounded bg-white/10 text-zinc-300">STATUS: COMPLETE</span>
+                </div>
+                <div>
+                    <h3 class="text-sm font-bold text-white mb-1">${proj.name}</h3>
+                    <p class="text-zinc-400 leading-relaxed text-[11px]">${proj.overview}</p>
+                </div>
+                <div class="space-y-1 bg-black/30 p-3 rounded-lg border border-white/5">
+                    <span class="text-[10px] text-zinc-500 uppercase font-bold tracking-wider block">Methods & Modeling:</span>
+                    <p class="text-zinc-300 text-[11px] leading-relaxed">${proj.methods}</p>
+                </div>
+                <div class="space-y-1 bg-black/30 p-3 rounded-lg border border-white/5">
+                    <span class="text-[10px] text-zinc-500 uppercase font-bold tracking-wider block">Technology Stack:</span>
+                    <p class="text-terminal-green text-[11px]">${proj.stack}</p>
+                </div>
+                <div class="pt-2 border-t border-white/10 flex flex-wrap gap-3 items-center justify-between text-[11px]">
+                    <span class="text-zinc-400 truncate font-mono">Repo: <a href="${proj.repo}" target="_blank" class="text-terminal-green underline">${proj.repo}</a></span>
+                    <span class="text-zinc-400 font-mono">Demo: <span class="text-zinc-200">${proj.demo}</span></span>
+                </div>
+            `;
+            openWindow('win-project-detail');
+        }
+
+        // Clock Update
+        function updateClock() {
+            const now = new Date();
+            const timeStr = now.toLocaleTimeString('en-US', { hour12: false });
+            const dayName = now.toLocaleDateString('en-US', { weekday: 'long' }).toUpperCase();
+            
+            document.getElementById('clock-time').textContent = timeStr;
+            document.getElementById('clock-day').textContent = dayName;
+            // Preserving target reference dates
+            document.getElementById('date-ad').textContent = 'Jun 07, 2026';
+            document.getElementById('date-bs').textContent = 'Jestha 19, 2081';
+        }
+
+        // Terminal Interaction
+        const terminalInput = document.getElementById('terminal-input');
+        const history = document.getElementById('terminal-history');
+
+        terminalInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                const cmd = terminalInput.value.trim().toLowerCase();
+                if (cmd) executeCommand(cmd);
+                terminalInput.value = '';
+            }
+        });
+
+        const commandData = {
+            bio: "Dikshant Neupane — AI & Data Architect / ML Engineer based in Nepal. Dedicated to applied machine learning, localized NLP systems, and robust analytical modeling.",
+            projects: "Index of 5 active systems reloaded. Use 'view 01' to 'view 05' or click any project in the list above.",
+            blogs: "Opening 'Research Logs'... Latest publication on low-resource NLP pipelines and dynamic agentic tooling.",
+            contact: "Terminal uplink: dikshantneupane69@gmail.com | LinkedIn: /in/dikshantneupane | Kathmandu, Nepal.",
+            help: "Commands: projects, view [1-5], bio, blogs, contact, clear, exit."
+        };
+
+        function executeCommand(cmd) {
+            if (cmd === 'clear') {
+                history.innerHTML = '';
+                return;
+            }
+            if (cmd === 'exit') {
+                closeWindow('win-terminal');
+                return;
+            }
+
+            // Quick mapping for view commands
+            if (cmd.includes('1') || cmd.includes('cric')) { showProjectDetail('cricnepal'); }
+            else if (cmd.includes('2') || cmd.includes('house')) { showProjectDetail('house-price'); }
+            else if (cmd.includes('3') || cmd.includes('election')) { showProjectDetail('nepal-election'); }
+            else if (cmd.includes('4') || cmd.includes('jana')) { showProjectDetail('jana-sunuwaai'); }
+            else if (cmd.includes('5') || cmd.includes('truva')) { showProjectDetail('truva-agent'); }
+
+            const line = document.createElement('div');
+            line.className = "text-xs space-y-1";
+            line.innerHTML = `
+                <div class="flex gap-2"><span class="text-terminal-green font-bold">$</span> <span class="text-white">${cmd}</span></div>
+                <div class="text-zinc-400 pl-4 leading-relaxed">${commandData[cmd] || "Command registered. Select a project card or inspect via 'view 01' - 'view 05'."}</div>
+            `;
+            history.appendChild(line);
+
+            const container = history.parentElement;
+            container.scrollTo({ top: container.scrollHeight, behavior: 'smooth' });
+        }
+    </script>
+
+
+</body></html>

@@ -1,0 +1,46 @@
+@import "tailwindcss";
+
+@layer base {
+  /* Warm plaster — shows before the photo loads and on overscroll */
+  html {
+    background-color: #e8dbca;
+  }
+
+  /* ── Global font stack ── */
+  body {
+    font-family: 'Inter', system-ui, sans-serif;
+  }
+
+  /* Display / headings → Space Grotesk */
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Space Grotesk', system-ui, sans-serif;
+  }
+
+  /* Monospace → JetBrains Mono */
+  code, kbd, pre, .font-mono {
+    font-family: 'JetBrains Mono', 'Fira Code', monospace;
+  }
+}
+
+/* ── CSS custom properties — design tokens ── */
+:root {
+  /* Brand */
+  --accent:        #a3e635;   /* lime green — primary CTA / terminal */
+  --accent-dim:    #84cc16;   /* one step darker for hover states    */
+  --accent-glow:   rgba(163, 230, 53, 0.25);
+
+  /* Warm neutral text scale — replaces cold zinc */
+  --text-primary:   #f5f0e8;  /* warm white — headings               */
+  --text-secondary: #c4b99a;  /* warm stone — body / descriptions    */
+  --text-muted:     #7a6f5a;  /* warm taupe — labels / metadata      */
+  --text-ghost:     #4a4035;  /* dim warm — placeholder / inactive   */
+
+  /* Surface */
+  --surface-1: rgba(40, 32, 20, 0.38);  /* card bg                   */
+  --surface-2: rgba(12, 10,  6, 0.45);  /* window bg                 */
+  --surface-3: rgba( 0,  0,  0, 0.25);  /* terminal body             */
+
+  /* Border */
+  --border-warm:   rgba(255, 220, 160, 0.10);
+  --border-subtle: rgba(255, 255, 255, 0.06);
+}
